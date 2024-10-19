@@ -6,11 +6,36 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ModeToggle } from "@/components/mode-toggle"
 import { LinkGroup } from "@/components/link-group"
-import { RemoveDuplicates } from "@/components/remove-duplicates"
-import { Braces } from "lucide-react"
+import { ChevronRight } from "lucide-react"
+import { Dialog, DialogContent } from "@/components/ui/dialog"
+import { DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Bungee_Inline } from "next/font/google"
 
 export function NavigationPage() {
   const [showHidden, setShowHidden] = useState(false)
+  const [password, setPassword] = useState("")
+  const [isPasswordCorrect, setIsPasswordCorrect] = useState(false)
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+
+  const handlePasswordSubmit = () => {
+    if (password === "15824821718") {
+      setIsPasswordCorrect(true)
+      setShowHidden(true)
+      setIsDialogOpen(false)
+    } else {
+      alert("Incorrect password")
+    }
+  }
+
+  const toggleHiddenLinks = () => {
+    if (showHidden) {
+      setShowHidden(false)
+      setIsPasswordCorrect(false)
+      setPassword("")
+    } else {
+      setIsDialogOpen(true)
+    }
+  }
 
   return (
     <div className="space-y-4">
@@ -60,7 +85,9 @@ export function NavigationPage() {
       <Card>
         <CardHeader>
           <CardTitle>
-            <Button onClick={() => setShowHidden(!showHidden)}>{showHidden ? "Hide" : "Show"} Additional Links</Button>
+            <Button variant="ghost" onClick={toggleHiddenLinks}>
+              {showHidden ? "Hide" : "Show"} Additional Links
+            </Button>
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -132,6 +159,25 @@ export function NavigationPage() {
           )}
         </CardContent>
       </Card>
+
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Enter Password</DialogTitle>
+          </DialogHeader>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault()
+              handlePasswordSubmit()
+            }}
+          >
+            <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Enter password" />
+            <Button size="icon" variant="ghost" style={{ marginLeft: "auto" }}>
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
