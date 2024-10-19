@@ -50,95 +50,88 @@ export function NavigationPage() {
         title="工具"
         linksPerRow={6}
         links={[
-          { name: "兴邦设备费率计算", url: "/pulse-water-billing-calc/pulse-water-billing-calc" },
+          { name: "兴邦设备费率计算", url: "/pulse-water-billing-calc" },
+          { name: "元素去重", url: "/remove-duplicates" },
           { name: "qr-gen", url: "../qr-styling/index.html" },
-          { name: "pulse-water-billing-calc", url: "../pulse-water-billing-calc/pulse-water-billing-calc.html" },
           { name: "bs-custom", url: "../chrome-bookmarks-simple/index.html?name=bscus" },
           { name: "bs-custom-jrh", url: "../chrome-bookmarks-simple/index.html?name=嘉荣华" },
-          { name: "元素去重", url: "/removeDuplicates" },
         ]}
       />
+      <Card>
+        <CardHeader>
+          <CardTitle>
+            <Button onClick={() => setShowHidden(!showHidden)}>{showHidden ? "Hide" : "Show"} Additional Links</Button>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          {showHidden && (
+            <>
+              <LinkGroup
+                title="Search Engines"
+                links={[
+                  { name: "Google", url: "https://www.google.com" },
+                  { name: "DuckDuckGo", url: "https://www.duckduckgo.com" },
+                  { name: "Bing", url: "https://www.bing.com" },
+                  { name: "Baidu", url: "https://www.baidu.com" },
+                  { name: "Sogou", url: "https://www.sogou.com" },
+                  { name: "360", url: "https://www.so.com/" },
+                ]}
+              />
 
-      <Button
-        style={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-        }}
-        onClick={() => setShowHidden(!showHidden)}
-      >
-        {showHidden ? "Hide" : "Show"} Additional Links
-      </Button>
+              <LinkGroup
+                title="Social Media"
+                links={[
+                  { name: "X", url: "https://x.com/" },
+                  { name: "Reddit", url: "https://www.reddit.com" },
+                  { name: "Telegram", url: "https://web.telegram.org/a/" },
+                  { name: "Discord", url: "https://discord.com/channels/@me" },
+                  { name: "Linux.do", url: "https://linux.do/" },
+                  { name: "Zhihu", url: "https://www.zhihu.com" },
+                  { name: "52pj", url: "https://www.52pojie.cn/" },
+                ]}
+              />
 
-      {showHidden && (
-        <>
-          <LinkGroup
-            title="Search Engines"
-            links={[
-              { name: "Google", url: "https://www.google.com" },
-              { name: "DuckDuckGo", url: "https://www.duckduckgo.com" },
-              { name: "Bing", url: "https://www.bing.com" },
-              { name: "Baidu", url: "https://www.baidu.com" },
-              { name: "Sogou", url: "https://www.sogou.com" },
-              { name: "360", url: "https://www.so.com/" },
-            ]}
-          />
+              <LinkGroup
+                title="Git"
+                links={[
+                  { name: "GitHub", url: "https://github.com/zchdoc" },
+                  { name: "Gitee", url: "https://gitee.com/" },
+                  { name: "CodeUp", url: "https://codeup.aliyun.com/" },
+                  { name: "GitLab", url: "https://gitlab.com/" },
+                  { name: "CSDN Git", url: "https://gitcode.com/" },
+                  { name: "GitHub Trending", url: "https://github.com/trending?since=monthly" },
+                ]}
+              />
 
-          <LinkGroup
-            title="Social Media"
-            links={[
-              { name: "X", url: "https://x.com/" },
-              { name: "Reddit", url: "https://www.reddit.com" },
-              { name: "Telegram", url: "https://web.telegram.org/a/" },
-              { name: "Discord", url: "https://discord.com/channels/@me" },
-              { name: "Linux.do", url: "https://linux.do/" },
-              { name: "Zhihu", url: "https://www.zhihu.com" },
-              { name: "52pj", url: "https://www.52pojie.cn/" },
-            ]}
-          />
+              <LinkGroup
+                title="AI"
+                links={[
+                  { name: "Coze.en", url: "https://www.coze.com/space/7322025004764364806/bot" },
+                  { name: "Cocici", url: "https://www.ciciai.com/" },
+                  { name: "OpenAI", url: "https://chat.openai.com/" },
+                  { name: "Claude", url: "https://claude.ai/new" },
+                  { name: "Groq", url: "https://groq.com/" },
+                  { name: "Mistral", url: "https://chat.mistral.ai/chat" },
+                  { name: "Perplexity", url: "https://www.perplexity.ai/" },
+                  { name: "Gemini", url: "https://gemini.google.com/app" },
+                ]}
+              />
 
-          <LinkGroup
-            title="Git"
-            links={[
-              { name: "GitHub", url: "https://github.com/zchdoc" },
-              { name: "Gitee", url: "https://gitee.com/" },
-              { name: "CodeUp", url: "https://codeup.aliyun.com/" },
-              { name: "GitLab", url: "https://gitlab.com/" },
-              { name: "CSDN Git", url: "https://gitcode.com/" },
-              { name: "GitHub Trending", url: "https://github.com/trending?since=monthly" },
-            ]}
-          />
-
-          <LinkGroup
-            title="AI"
-            links={[
-              { name: "Coze.en", url: "https://www.coze.com/space/7322025004764364806/bot" },
-              { name: "Cocici", url: "https://www.ciciai.com/" },
-              { name: "OpenAI", url: "https://chat.openai.com/" },
-              { name: "Claude", url: "https://claude.ai/new" },
-              { name: "Groq", url: "https://groq.com/" },
-              { name: "Mistral", url: "https://chat.mistral.ai/chat" },
-              { name: "Perplexity", url: "https://www.perplexity.ai/" },
-              { name: "Gemini", url: "https://gemini.google.com/app" },
-            ]}
-          />
-
-          <LinkGroup
-            title="Translation"
-            links={[
-              { name: "Google Translate", url: "https://translate.google.com" },
-              { name: "Bing Translator", url: "https://cn.bing.com/translator" },
-              { name: "DeepL", url: "https://www.deepl.com/zh/translator" },
-              { name: "Google Translate (ZH)", url: "https://translate.google.com.hk/?hl=zh-CN&sl=auto&tl=en&op=translate" },
-              { name: "Baidu Translate", url: "https://fanyi.baidu.com/" },
-              { name: "Youdao Translate", url: "https://fanyi.youdao.com/#/" },
-            ]}
-          />
-        </>
-      )}
-
-      <RemoveDuplicates />
+              <LinkGroup
+                title="Translation"
+                links={[
+                  { name: "Google Translate", url: "https://translate.google.com" },
+                  { name: "Bing Translator", url: "https://cn.bing.com/translator" },
+                  { name: "DeepL", url: "https://www.deepl.com/zh/translator" },
+                  { name: "Google Translate (ZH)", url: "https://translate.google.com.hk/?hl=zh-CN&sl=auto&tl=en&op=translate" },
+                  { name: "Baidu Translate", url: "https://fanyi.baidu.com/" },
+                  { name: "Youdao Translate", url: "https://fanyi.youdao.com/#/" },
+                ]}
+              />
+            </>
+          )}
+        </CardContent>
+      </Card>
     </div>
   )
 }

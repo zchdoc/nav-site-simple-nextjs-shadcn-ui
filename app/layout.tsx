@@ -6,7 +6,8 @@ import { ThemeProvider } from "@/components/theme-provider"
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'FastUrl Navigation',
+  // FastUrl Navigation
+  title: '常用站',
   description: 'A simple navigation page built with Next.js and shadcn/ui',
 };
 
