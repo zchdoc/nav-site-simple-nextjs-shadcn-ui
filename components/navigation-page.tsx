@@ -1,6 +1,5 @@
 "use client"
-
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -16,6 +15,10 @@ export function NavigationPage() {
   const [password, setPassword] = useState("")
   const [isPasswordCorrect, setIsPasswordCorrect] = useState(false)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [location, setLocation] = useState<{ latitude: number; longitude: number } | null>(null)
+  useEffect(() => {
+    getLocation()
+  }, [])
 
   const handlePasswordSubmit = () => {
     if (password === "15824821718") {
@@ -37,13 +40,43 @@ export function NavigationPage() {
     }
   }
 
+  const getLocation = () => {
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          console.log("Latitude: ", position.coords.latitude)
+          setLocation({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+          })
+          console.log("Location:", position)
+        },
+        (error) => {
+          console.error("Error getting location:", error)
+        }
+      )
+    } else {
+      console.log("Geolocation is not available in your browser.")
+    }
+  }
+
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">常用链接</h1>
         <ModeToggle />
       </div>
-
+      {location && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Your Location</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p>Latitude: {location.latitude}</p>
+            <p>Longitude: {location.longitude}</p>
+          </CardContent>
+        </Card>
+      )}
       <LinkGroup
         title="Singbon"
         linksPerRow={6}
