@@ -1,21 +1,21 @@
 "use client"
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
 
 export default function PulseWaterBillingCalc() {
-  const [price, setPrice] = useState('2')
-  const [priceUnit, setPriceUnit] = useState('0.1')
-  const [volume, setVolume] = useState('1.67')
-  const [volumeUnit, setVolumeUnit] = useState('0.001')
-  const [result, setResult] = useState('0')
-  const [num1, setNum1] = useState('')
-  const [num2, setNum2] = useState('2')
-  const [operator, setOperator] = useState('*')
-  const [calcResult, setCalcResult] = useState('')
+  const [price, setPrice] = useState("2")
+  const [priceUnit, setPriceUnit] = useState("0.1")
+  const [volume, setVolume] = useState("1.67")
+  const [volumeUnit, setVolumeUnit] = useState("0.001")
+  const [result, setResult] = useState("0")
+  const [num1, setNum1] = useState("")
+  const [num2, setNum2] = useState("2")
+  const [operator, setOperator] = useState("*")
+  const [calcResult, setCalcResult] = useState("")
 
   useEffect(() => {
     calculatePulses()
@@ -36,8 +36,8 @@ export default function PulseWaterBillingCalc() {
       setResult(pulsesFixed)
       setNum1(pulsesFixed)
     } else {
-      setResult('0')
-      setNum1('')
+      setResult("0")
+      setNum1("")
     }
   }
 
@@ -47,14 +47,22 @@ export default function PulseWaterBillingCalc() {
     if (!isNaN(n1) && !isNaN(n2)) {
       let result
       switch (operator) {
-        case '+': result = n1 + n2; break
-        case '-': result = n1 - n2; break
-        case '*': result = n1 * n2; break
-        case '/': result = n2 !== 0 ? n1 / n2 : '除数不能为0'; break
+        case "+":
+          result = n1 + n2
+          break
+        case "-":
+          result = n1 - n2
+          break
+        case "*":
+          result = n1 * n2
+          break
+        case "/":
+          result = n2 !== 0 ? n1 / n2 : "除数不能为0"
+          break
       }
-      setCalcResult(typeof result === 'number' ? result.toFixed(10) : result)
+      setCalcResult(typeof result === "number" ? result.toFixed(10) : result || "")
     } else {
-      setCalcResult('')
+      setCalcResult("")
     }
   }
 
