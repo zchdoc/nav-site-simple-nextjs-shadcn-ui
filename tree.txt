@@ -1,0 +1,31 @@
+sb1-7x4m6h-v1
+├─.bolt
+├─.idea
+│  └─inspectionProfiles
+├─.next
+│  ├─cache
+│  │  ├─swc
+│  │  │  └─plugins
+│  │  │      └─v7_windows_x86_64_0.102.1
+│  │  └─webpack
+│  │      ├─client-development
+│  │      └─server-development
+│  ├─server
+│  │  ├─app
+│  │  └─vendor-chunks
+│  ├─static
+│  │  ├─chunks
+│  │  │  └─app
+│  │  ├─css
+│  │  │  └─app
+│  │  ├─development
+│  │  ├─media
+│  │  └─webpack
+│  │      └─app
+│  └─types
+│      └─app
+├─app
+├─components
+│  └─ui
+├─hooks
+└─lib
