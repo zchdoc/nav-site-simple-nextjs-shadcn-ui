@@ -7,15 +7,15 @@ const nextConfig = {
   async rewrites() {
     return [
       {
-        source: '/api/a2/:path*',
-        destination: 'https://a2.4000063966.com:8443/xb/zk/:path*',
+        source: "/api/a2/:path*",
+        destination: "https://a2.4000063966.com:8443/xb/zk/:path*",
       },
       {
-        source: '/api/a3/:path*',
-        destination: 'https://a3.4000063966.com:8443/xb/zk/:path*',
+        source: "/api/a3/:path*",
+        destination: "https://a3.4000063966.com:8443/xb/zk/:path*",
       },
-    ];
+    ]
   },
-};
+}
 
-module.exports = nextConfig;
+module.exports = nextConfig
