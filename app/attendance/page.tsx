@@ -71,10 +71,16 @@ export default function AttendancePage() {
     setBtnQueryLoading(true);
     setError(null);
     try {
+      let beginOfMonth = format(new Date(dateTime.getFullYear(), dateTime.getMonth(), 1), "yyyy-MM-dd HH:mm:ss");
+      console.log("beginOfMonth", beginOfMonth)
+      let endOfMonth = format(new Date(dateTime.getFullYear(), dateTime.getMonth() + 1, 0, 23, 59, 59), "yyyy-MM-dd HH:mm:ss");
+      console.log("endOfMonth", endOfMonth)
+      endOfMonth = '2024-10-10 23:59:59';
+      console.log("endOfMonth2", endOfMonth)
       const requestData = {
         userNo: userNo || '3000002',
-        timeStart: format(new Date(dateTime.getFullYear(), dateTime.getMonth(), 1), "yyyy-MM-dd HH:mm:ss"),
-        timeEnd: format(new Date(dateTime.getFullYear(), dateTime.getMonth() + 1, 0, 23, 59, 59), "yyyy-MM-dd HH:mm:ss"),
+        timeStart: beginOfMonth,
+        timeEnd: endOfMonth,
         openId: 'o45LO4l28n6aa4dFCXB3BBYOFWNs',
         userVerifyNumber: '15824821718',
       };
@@ -87,6 +93,7 @@ export default function AttendancePage() {
       }
       const attendanceData = await response.json();
       console.info("attendanceData:", attendanceData)
+      console.info("attendanceData:", JSON.stringify(attendanceData))
     } catch (err) {
       console.error('Error fetching attendance records:', err);
       setError(err instanceof Error ? err.message : "Failed to fetch attendance records. Please try again.");

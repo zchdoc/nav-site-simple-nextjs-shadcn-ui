@@ -8,11 +8,11 @@ const nextConfig = {
     return [
       {
         source: "/api/a2/:path*",
-        destination: "https://a2.4000063966.com:8443/xb/zk/:path*",
+        destination: "http://a2.4000063966.com:81/xb/zk/:path*",
       },
       {
         source: "/api/a3/:path*",
-        destination: "https://a3.4000063966.com:8443/xb/zk/:path*",
+        destination: "http://a3c.4000063966.com/xb/zk/:path*",
       },
     ]
   },

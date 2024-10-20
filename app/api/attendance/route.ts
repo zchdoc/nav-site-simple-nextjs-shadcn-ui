@@ -4,7 +4,8 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   
   try {
-    const response = await fetch(`https://a2.4000063966.com:8443/xb/zk/attendance/record.do?${searchParams}`);
+    console.info("searchParams:", searchParams);
+    const response = await fetch(`http://a2.4000063966.com:81/xb/zk/attendance/record.do?${searchParams}`);
     
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
