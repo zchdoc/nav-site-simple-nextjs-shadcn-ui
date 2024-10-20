@@ -73,20 +73,13 @@ export default function AttendancePage() {
         timeStart: format(new Date(dateTime.getFullYear(), dateTime.getMonth(), 1), "yyyy-MM-dd HH:mm:ss"),
         timeEnd: format(new Date(dateTime.getFullYear(), dateTime.getMonth() + 1, 0, 23, 59, 59), "yyyy-MM-dd HH:mm:ss"),
         openId: 'o45LO4l28n6aa4dFCXB3BBYOFWNs',
-        userVerifyNumber: '15811112222',
+        userVerifyNumber: '15824821718',
       };
 
       // 将请求数据转换为查询字符串
       const queryParams = new URLSearchParams(requestData).toString();
 
-      // const response = await fetch(`https://a2.4000063966.com:8443/xb/zk/attendance/record.do?${queryParams}`, {
-      //   method: 'GET',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //   },
-      // });
-
-      const response = await fetch(`/api/xb/zk/attendance/record.do?${queryParams}`, {
+      const response = await fetch(`https://a2.4000063966.com:8443/xb/zk/attendance/record.do?${queryParams}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
