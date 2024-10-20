@@ -35,21 +35,24 @@ export default function AttendancePage() {
     setDateTimeText(format(dateTime, "yyyy-MM-dd HH:mm:ss"))
   }, [dateTime])
 
-  const handleDateSelect = (date: Date) => {
-    setDateTime((prev) => new Date(date.setHours(prev.getHours(), prev.getMinutes(), prev.getSeconds())))
-    setIsDatePickerOpen(false)
-    setIsTimePickerOpen(true)
+  // const handleDateSelect = (date: Date) => {
+  //   setDateTime((prev) => new Date(date.setHours(prev.getHours(), prev.getMinutes(), prev.getSeconds())))
+  //   setIsDatePickerOpen(false)
+  //   setIsTimePickerOpen(true)
+  // }
+  const handleDateSelect = (date: Date | undefined) => {
+    if (date) { // 确保 date 不是 undefined
+      setDateTime((prev) => new Date(date.setHours(prev.getHours(), prev.getMinutes(), prev.getSeconds())));
+      setIsDatePickerOpen(false);
+      setIsTimePickerOpen(true);
+    }
   }
 
-  const handleTimeSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const [hours, minutes] = e.target.value.split(":")
-    setDateTime((prev) => {
-      const newDate = new Date(prev)
-      newDate.setHours(Number(hours), Number(minutes))
-      return newDate
-    })
-    setIsTimePickerOpen(false)
-  }
+  const handleTimeSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedTime = e.target.value;  // 获取用户选择的时间
+    // 在这里处理选择的时间
+  };
+
 
   const doMockAttendanceCustom = async () => {
     setBtnConfirmLoading(true)
@@ -78,28 +81,12 @@ export default function AttendancePage() {
 
       const queryParams = new URLSearchParams(requestData).toString();
       const response = await fetch(`/api/attendance?${queryParams}`);
-
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const errorData = await response.json();
+        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
       }
-
       const attendanceData = await response.json();
-      console.info('Attendance data:', attendanceData);
-
-      if (Array.isArray(attendanceData)) {
-        const formattedData: AttendanceRecord[] = attendanceData.map((record: any) => ({
-          date: record.date,
-          records: record.records.map((r: any) => ({
-            time: r.time,
-            userName: r.userName,
-            signInStateStr: r.signInStateStr,
-            signInState: r.signInState,
-          })),
-        }));
-        setAttendanceRecords(formattedData);
-      } else {
-        throw new Error('Invalid data format received');
-      }
+      console.info("attendanceData:", attendanceData)
     } catch (err) {
       console.error('Error fetching attendance records:', err);
       setError(err instanceof Error ? err.message : "Failed to fetch attendance records. Please try again.");
@@ -107,7 +94,6 @@ export default function AttendancePage() {
       setBtnQueryLoading(false);
     }
   };
-
   return (
     <div className="container mx-auto p-4 space-y-4">
       <h1 className="text-3xl font-bold">Attendance Clock-in</h1>
