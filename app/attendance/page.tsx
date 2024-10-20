@@ -15,7 +15,6 @@ export default function AttendancePage() {
   const [dateTime, setDateTime] = useState(new Date())
   const [dateTimeText, setDateTimeText] = useState("")
   const [userNo, setUserNo] = useState("")
-  // const [attendanceRecords, setAttendanceRecords] = useState([])
   type AttendanceRecord = {
     date: string;
     records: {
@@ -30,7 +29,6 @@ export default function AttendancePage() {
   const [isTimePickerOpen, setIsTimePickerOpen] = useState(false)
   const [btnConfirmLoading, setBtnConfirmLoading] = useState(false)
   const [btnQueryLoading, setBtnQueryLoading] = useState(false)
-  // const [error, setError] = useState(null)
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -47,13 +45,11 @@ export default function AttendancePage() {
     const [hours, minutes] = e.target.value.split(":")
     setDateTime((prev) => {
       const newDate = new Date(prev)
-      newDate.setHours(Number(hours), Number(minutes)) // 将字符串转换为数字
+      newDate.setHours(Number(hours), Number(minutes))
       return newDate
     })
     setIsTimePickerOpen(false)
   }
-
-  
 
   const doMockAttendanceCustom = async () => {
     setBtnConfirmLoading(true)
@@ -62,7 +58,7 @@ export default function AttendancePage() {
       await new Promise((resolve) => setTimeout(resolve, 1000))
       console.log("Attendance recorded:", { userNo, dateTimeText })
     } catch (err) {
-      setError("Failed to record attendance. Please try again.") // 现在可以传入字符串
+      setError("Failed to record attendance. Please try again.")
     } finally {
       setBtnConfirmLoading(false)
     }
@@ -72,27 +68,44 @@ export default function AttendancePage() {
     setBtnQueryLoading(true)
     setError(null)
     try {
-      // Simulating API call
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-      // Mock data - in a real app, this would come from an API
-      setAttendanceRecords([
-        {
-          date: "2024-03-15", records: [
-            { time: "09:00:00", userName: "John Doe", signInStateStr: "Clock In", signInState: 0 },
-            { time: "18:00:00", userName: "John Doe", signInStateStr: "Clock Out", signInState: 1 },
-          ]
+      const requestData = {
+        userNo: userNo || '3000002', // Use the entered userNo or default to '3000002'
+        timeStart: format(new Date(dateTime.getFullYear(), dateTime.getMonth(), 1), "yyyy-MM-dd HH:mm:ss"),
+        timeEnd: format(new Date(dateTime.getFullYear(), dateTime.getMonth() + 1, 0, 23, 59, 59), "yyyy-MM-dd HH:mm:ss"),
+        openId: 'o45LO4l28n6aa4dFCXB3BBYOFWNs',
+        userVerifyNumber: '15811112222',
+      };
+
+      const response = await fetch('https://a2.4000063966.com:8443/xb/zk/attendance/record.do', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
         },
-        {
-          date: "2024-03-14", records: [
-            { time: "08:55:00", userName: "John Doe", signInStateStr: "Clock In", signInState: 0 },
-            { time: "17:30:00", userName: "John Doe", signInStateStr: "Clock Out", signInState: 1 },
-          ]
-        },
-      ])
+        body: JSON.stringify(requestData),
+      });
+
+      if (response.ok) {
+        const attendanceData = await response.json();
+        // Assuming the API returns data in a format similar to what we need
+        // You might need to transform the data to match the AttendanceRecord type
+        const formattedData: AttendanceRecord[] = attendanceData.map((record: any) => ({
+          date: record.date,
+          records: record.records.map((r: any) => ({
+            time: r.time,
+            userName: r.userName,
+            signInStateStr: r.signInStateStr,
+            signInState: r.signInState,
+          })),
+        }));
+        setAttendanceRecords(formattedData);
+      } else {
+        throw new Error('Failed to fetch attendance records');
+      }
     } catch (err) {
-      setError("Failed to fetch attendance records. Please try again.")
+      setError("Failed to fetch attendance records. Please try again.");
+      console.error(err);
     } finally {
-      setBtnQueryLoading(false)
+      setBtnQueryLoading(false);
     }
   }
 
