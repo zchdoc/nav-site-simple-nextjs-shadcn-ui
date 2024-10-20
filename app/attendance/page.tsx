@@ -69,22 +69,15 @@ export default function AttendancePage() {
     setError(null);
     try {
       const requestData = {
-        userNo: userNo || '3000002', // Use the entered userNo or default to '3000002'
+        userNo: userNo || '3000002',
         timeStart: format(new Date(dateTime.getFullYear(), dateTime.getMonth(), 1), "yyyy-MM-dd HH:mm:ss"),
         timeEnd: format(new Date(dateTime.getFullYear(), dateTime.getMonth() + 1, 0, 23, 59, 59), "yyyy-MM-dd HH:mm:ss"),
         openId: 'o45LO4l28n6aa4dFCXB3BBYOFWNs',
         userVerifyNumber: '15824821718',
       };
 
-      // 将请求数据转换为查询字符串
       const queryParams = new URLSearchParams(requestData).toString();
-
-      const response = await fetch(`https://a2.4000063966.com:8443/xb/zk/attendance/record.do?${queryParams}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      const response = await fetch(`/api/attendance?${queryParams}`);
 
       if (response.ok) {
         const attendanceData = await response.json();
@@ -97,19 +90,19 @@ export default function AttendancePage() {
             signInState: r.signInState,
           })),
         }));
+        console.info('zch-attendance-data:',formattedData);
         setAttendanceRecords(formattedData);
       } else {
-        console.warn(response);
+        console.warn('zch-error:',response);
         throw new Error('Failed to fetch attendance records');
       }
     } catch (err) {
       setError("Failed to fetch attendance records. Please try again.");
-      console.error(err);
+      console.error('zch-error-2:',err);
     } finally {
       setBtnQueryLoading(false);
     }
   };
-
 
   return (
     <div className="container mx-auto p-4 space-y-4">
