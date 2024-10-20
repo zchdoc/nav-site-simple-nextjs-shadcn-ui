@@ -65,8 +65,8 @@ export default function AttendancePage() {
   }
 
   const doQueryAttendanceRecord = async () => {
-    setBtnQueryLoading(true)
-    setError(null)
+    setBtnQueryLoading(true);
+    setError(null);
     try {
       const requestData = {
         userNo: userNo || '3000002', // Use the entered userNo or default to '3000002'
@@ -76,18 +76,25 @@ export default function AttendancePage() {
         userVerifyNumber: '15811112222',
       };
 
-      const response = await fetch('https://a2.4000063966.com:8443/xb/zk/attendance/record.do', {
+      // 将请求数据转换为查询字符串
+      const queryParams = new URLSearchParams(requestData).toString();
+
+      // const response = await fetch(`https://a2.4000063966.com:8443/xb/zk/attendance/record.do?${queryParams}`, {
+      //   method: 'GET',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //   },
+      // });
+
+      const response = await fetch(`/api/xb/zk/attendance/record.do?${queryParams}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(requestData),
       });
 
       if (response.ok) {
         const attendanceData = await response.json();
-        // Assuming the API returns data in a format similar to what we need
-        // You might need to transform the data to match the AttendanceRecord type
         const formattedData: AttendanceRecord[] = attendanceData.map((record: any) => ({
           date: record.date,
           records: record.records.map((r: any) => ({
@@ -99,6 +106,7 @@ export default function AttendancePage() {
         }));
         setAttendanceRecords(formattedData);
       } else {
+        console.warn(response);
         throw new Error('Failed to fetch attendance records');
       }
     } catch (err) {
@@ -107,7 +115,8 @@ export default function AttendancePage() {
     } finally {
       setBtnQueryLoading(false);
     }
-  }
+  };
+
 
   return (
     <div className="container mx-auto p-4 space-y-4">
