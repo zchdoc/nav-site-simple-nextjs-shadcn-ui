@@ -17,7 +17,7 @@ export function NavigationPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [location, setLocation] = useState<{ latitude: number; longitude: number } | null>(null)
   useEffect(() => {
-    getLocation()
+    // getLocation()
   }, [])
 
   const handlePasswordSubmit = () => {
@@ -113,6 +113,7 @@ export function NavigationPage() {
           { name: "qr-gen", url: "../qr-styling/index.html" },
           { name: "bs-custom", url: "../chrome-bookmarks-simple/index.html?name=bscus" },
           { name: "bs-custom-jrh", url: "../chrome-bookmarks-simple/index.html?name=嘉荣华" },
+          { name: "attendance", url: "/attendance" },
         ]}
       />
       <Card>
