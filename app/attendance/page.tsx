@@ -79,8 +79,14 @@ export default function AttendancePage() {
       const queryParams = new URLSearchParams(requestData).toString();
       const response = await fetch(`/api/attendance?${queryParams}`);
 
-      if (response.ok) {
-        const attendanceData = await response.json();
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const attendanceData = await response.json();
+      console.info('Attendance data:', attendanceData);
+
+      if (Array.isArray(attendanceData)) {
         const formattedData: AttendanceRecord[] = attendanceData.map((record: any) => ({
           date: record.date,
           records: record.records.map((r: any) => ({
@@ -90,15 +96,13 @@ export default function AttendancePage() {
             signInState: r.signInState,
           })),
         }));
-        console.info('zch-attendance-data:',formattedData);
         setAttendanceRecords(formattedData);
       } else {
-        console.warn('zch-error:',response);
-        throw new Error('Failed to fetch attendance records');
+        throw new Error('Invalid data format received');
       }
     } catch (err) {
-      setError("Failed to fetch attendance records. Please try again.");
-      console.error('zch-error-2:',err);
+      console.error('Error fetching attendance records:', err);
+      setError(err instanceof Error ? err.message : "Failed to fetch attendance records. Please try again.");
     } finally {
       setBtnQueryLoading(false);
     }
