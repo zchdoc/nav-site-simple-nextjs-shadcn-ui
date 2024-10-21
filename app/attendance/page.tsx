@@ -1,61 +1,136 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { AlertCircle } from "lucide-react"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Calendar } from "@/components/ui/calendar"
-import { format } from "date-fns"
+import React, {useState, useEffect} from "react"
+import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card"
+import {Button} from "@/components/ui/button"
+import {Input} from "@/components/ui/input"
+import {Label} from "@/components/ui/label"
+import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert"
+import {AlertCircle} from "lucide-react"
+import {Dialog, DialogContent, DialogHeader, DialogTitle} from "@/components/ui/dialog"
+import {Calendar} from "@/components/ui/calendar"
+import {format} from "date-fns"
 import AttendanceCalendar from "@/components/AttendanceCalendar"
+import {ConfigProvider, DatePicker, Space, theme} from 'antd';
+import dayjs from "dayjs";
+
+import locale from 'antd/locale/zh_CN';
+
+
+import 'dayjs/locale/zh-cn';
+import {bool} from "prop-types";
+
+dayjs.locale('zh-cn');
 
 export default function AttendancePage() {
   const [dateTime, setDateTime] = useState(new Date())
-  const [dateTimeText, setDateTimeText] = useState("")
-  const [userNo, setUserNo] = useState("")
+  const [dateTimeText, setDateTimeText] = useState('')
+  const [userNo, setUserNo] = useState('')
+  const [beginOfMonth, setBeginOfMonth] = useState('')
+  const [endOfMonth, setEndOfMonth] = useState('')
+  //
+  const [clockInUserNo, setClockInUserNo] = useState('')
+  const [clockInDateTime, setClockInDateTime] = useState("")
+  //
   const [attendanceRecords, setAttendanceRecords] = useState([]);
-  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false)
-  const [isTimePickerOpen, setIsTimePickerOpen] = useState(false)
   const [btnConfirmLoading, setBtnConfirmLoading] = useState(false)
   const [btnQueryLoading, setBtnQueryLoading] = useState(false)
   const [error, setError] = useState<string | null>(null);
-
   useEffect(() => {
     setDateTimeText(format(dateTime, "yyyy-MM-dd HH:mm:ss"))
   }, [dateTime])
+  // const doMockAttendanceCustom = async () => {
+  //   setBtnConfirmLoading(true)
+  //   setError(null)
+  //   try {
+  //     // await new Promise((resolve) => setTimeout(resolve, 1000))
+  //     console.log("Attendance recorded:", {clockInUserNo, clockInDateTime})
+  //   }
+  //   catch (err) {
+  //     setError("Failed to record attendance. Please try again.")
+  //   }
+  //   finally {
+  //     setBtnConfirmLoading(false)
+  //   }
+  // }
 
-  const handleDateSelect = (date: Date | undefined) => {
-    if (date) {
-      setDateTime((prev) => new Date(date.setHours(prev.getHours(), prev.getMinutes(), prev.getSeconds())));
-      setIsDatePickerOpen(false);
-      setIsTimePickerOpen(true);
-    }
-  }
+  // const doMockAttendanceCustom = async () => {
+  //   setBtnConfirmLoading(true)
+  //   setError(null)
+  //   try {
+  //     // Assuming verifiedNumbersMap is defined elsewhere in your component
+  //     let userNo = clockInUserNo // or use verifiedNumbersMap.get(userVerifyNumber) if needed
+  //     let postTime = clockInDateTime
+  //     let data = `${userNo}\t${postTime}\t0\t15\t\t0\t0`
+  //
+  //     const response = await fetch(`/api/iclock/attDataCustom?sn=CJDE193560303&table=ATTLOG&Stamp=${postTime}`, {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify({ data: data }),
+  //     })
+  //
+  //     if (!response.ok) {
+  //       throw new Error(`HTTP error! status: ${response.status}`)
+  //     }
+  //
+  //     const result = await response.json()
+  //     console.log("Attendance recorded:", result)
+  //
+  //     // You might want to use a toast notification instead of an alert
+  //     alert('OK: ' + JSON.stringify(result))
+  //   } catch (err) {
+  //     console.error("Error recording attendance:", err)
+  //     setError("Failed to record attendance. Please try again.")
+  //     alert('FAIL: ' + err.message)
+  //   } finally {
+  //     // Delay resetting the button state
+  //     setTimeout(() => {
+  //       setBtnConfirmLoading(false)
+  //     }, 1000)
+  //   }
+  // }
 
-  const handleTimeSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedTime = e.target.value;
-    const [hours, minutes] = selectedTime.split(':');
-    setDateTime((prev) => {
-      const newDate = new Date(prev);
-      newDate.setHours(parseInt(hours), parseInt(minutes));
-      return newDate;
-    });
-    setIsTimePickerOpen(false);
-  };
 
   const doMockAttendanceCustom = async () => {
     setBtnConfirmLoading(true)
     setError(null)
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-      console.log("Attendance recorded:", { userNo, dateTimeText })
+      let userNo = clockInUserNo // Assuming this is the correct user number
+      let postTime = clockInDateTime
+      let data = `${userNo}\t${postTime}\t0\t15\t\t0\t0`
+
+      const queryParams = new URLSearchParams({
+        sn: 'CJDE193560303',
+        table: 'ATTLOG',
+        Stamp: postTime
+      }).toString()
+
+      const response = await fetch(`/api/a2/iclock/attDataCustom?${queryParams}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ data: data }),
+      })
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      const result = await response.json()
+      console.log("Attendance recorded:", result)
+
+      alert('OK: ' + JSON.stringify(result))
     } catch (err) {
+      console.error("Error recording attendance:", err)
       setError("Failed to record attendance. Please try again.")
+      alert('FAIL: ' + err.message)
     } finally {
-      setBtnConfirmLoading(false)
+      setTimeout(() => {
+        setBtnConfirmLoading(false)
+      }, 1000)
     }
   }
 
@@ -63,12 +138,12 @@ export default function AttendancePage() {
     setBtnQueryLoading(true);
     setError(null);
     try {
-      let beginOfMonth = format(new Date(dateTime.getFullYear(), dateTime.getMonth(), 1), "yyyy-MM-dd HH:mm:ss");
-      let endOfMonth = format(new Date(dateTime.getFullYear(), dateTime.getMonth() + 1, 0, 23, 59, 59), "yyyy-MM-dd HH:mm:ss");
+      let beginOfMonthDefault = format(new Date(dateTime.getFullYear(), dateTime.getMonth(), 1), "yyyy-MM-dd HH:mm:ss");
+      let endOfMonthDefault = format(new Date(dateTime.getFullYear(), dateTime.getMonth() + 1, 0, 23, 59, 59), "yyyy-MM-dd HH:mm:ss");
       const requestData = {
         userNo: userNo || '3000002',
-        timeStart: beginOfMonth,
-        timeEnd: endOfMonth,
+        timeStart: beginOfMonth || beginOfMonthDefault,
+        timeEnd: endOfMonth || endOfMonthDefault,
         openId: 'o45LO4l28n6aa4dFCXB3BBYOFWNs',
         userVerifyNumber: '15824821718',
       };
@@ -82,16 +157,18 @@ export default function AttendancePage() {
       }
       const attendanceData = await response.json();
       setAttendanceRecords(attendanceData);
-    } catch (err) {
+    }
+    catch (err) {
       console.error('Error fetching attendance records:', err);
       setError(err instanceof Error ? err.message : "Failed to fetch attendance records. Please try again.");
-    } finally {
+    }
+    finally {
       setBtnQueryLoading(false);
     }
   };
-
   const formatAttendanceData = (records) => {
     const formattedData = {};
+    console.info('records:', records)
     records.forEach(dayRecords => {
       dayRecords.forEach(record => {
         if (!formattedData[record.date]) {
@@ -105,87 +182,94 @@ export default function AttendancePage() {
     });
     return formattedData;
   };
-
+  const {RangePicker} = DatePicker;
   return (
     <div className="container mx-auto p-4 space-y-4">
       <h1 className="text-3xl font-bold">Attendance Clock-in</h1>
-
+      {/* check in */}
       <Card>
         <CardHeader>
           <CardTitle>Clock-in Details</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="datetime">Date and Time</Label>
-            <div className="flex space-x-2">
+          <ConfigProvider locale={locale} theme={{algorithm: theme.darkAlgorithm,}}>
+            <Space>
               <Input
-                id="datetime"
-                value={dateTimeText}
-                readOnly
-                onClick={() => setIsDatePickerOpen(true)}
+                id="clockInUserNo"
+                value={clockInUserNo}
+                onChange={(e) => setClockInUserNo(e.target.value)}
+                placeholder="模拟卡号"
               />
-              <Dialog open={isDatePickerOpen} onOpenChange={setIsDatePickerOpen}>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Select Date</DialogTitle>
-                  </DialogHeader>
-                  <Calendar
-                    mode="single"
-                    selected={dateTime}
-                    onSelect={handleDateSelect}
-                  />
-                </DialogContent>
-              </Dialog>
-              <Dialog open={isTimePickerOpen} onOpenChange={setIsTimePickerOpen}>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Select Time</DialogTitle>
-                  </DialogHeader>
-                  <Input
-                    type="time"
-                    onChange={handleTimeSelect}
-                    value={format(dateTime, "HH:mm")}
-                  />
-                </DialogContent>
-              </Dialog>
-            </div>
-          </div>
-
-          <Button onClick={doMockAttendanceCustom} disabled={btnConfirmLoading}>
-            {btnConfirmLoading ? "Processing..." : "Confirm Clock-in"}
-          </Button>
+              <DatePicker
+                size='large'
+                showTime
+                allowClear
+                placeholder="模拟时间"
+                onChange={(date, dateString) => {
+                  if (date) {
+                    // Format the date to match your desired format
+                    const formattedDate = date.format("YYYY-MM-DD HH:mm:ss")
+                    setClockInDateTime(formattedDate)
+                  } else {
+                    // If the date is cleared, reset the state
+                    setClockInDateTime("")
+                  }
+                }}
+              />
+            </Space>
+            <br/>
+            <Button onClick={doMockAttendanceCustom} disabled={btnConfirmLoading}>
+              {btnConfirmLoading ? "Processing..." : "Confirm Clock-in"}
+            </Button>
+          </ConfigProvider>
         </CardContent>
       </Card>
-
+      {/* query records */}
       <Card>
         <CardHeader>
           <CardTitle>Attendance Records</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="userNo">User Number (Admin only)</Label>
-            <Input
-              id="userNo"
-              value={userNo}
-              onChange={(e) => setUserNo(e.target.value)}
-              placeholder="Enter user number"
-            />
-          </div>
-
-          <Button onClick={doQueryAttendanceRecord} disabled={btnQueryLoading}>
-            {btnQueryLoading ? "Querying..." : "Query Records"}
-          </Button>
-
-          {/*{attendanceRecords.length > 0 && (*/}
-          {/*  <AttendanceCalendar attendanceData={formatAttendanceData(attendanceRecords)} />*/}
-          {/*)}*/}
-          <AttendanceCalendar attendanceData={formatAttendanceData(attendanceRecords)} />
+          {/*{attendanceRecords.length > 0 && (<AttendanceCalendar )}*/}
+          <ConfigProvider locale={locale} theme={{algorithm: theme.darkAlgorithm,}}>
+            <Space>
+              <Input
+                id="userNo"
+                value={userNo}
+                onChange={(e) => setUserNo(e.target.value)}
+                placeholder="请输入要查询的编号"
+              />
+              <RangePicker
+                size='large'
+                showTime
+                allowClear
+                onChange={(dates, dateStrings) => {
+                  // dates 是 dayjs 对象的数组，dateStrings 是格式化后的日期字符串数组
+                  if (dates && dates.length === 2) {
+                    // 设置开始日期和结束日期
+                    setBeginOfMonth(dateStrings[0]); // 获取格式化后的开始日期字符串
+                    setEndOfMonth(dateStrings[1]);   // 获取格式化后的结束日期字符串
+                  }
+                  else {
+                    // 如果清除了日期选择器的值，则重置状态
+                    setBeginOfMonth('');
+                    setEndOfMonth('');
+                  }
+                }}
+              />
+            </Space>
+            <br/>
+            <Button onClick={doQueryAttendanceRecord} disabled={btnQueryLoading}>
+              {btnQueryLoading ? "Querying..." : "Query Records"}
+            </Button>
+            <br/>
+            <AttendanceCalendar attendanceData={formatAttendanceData(attendanceRecords)}/>
+          </ConfigProvider>
         </CardContent>
       </Card>
-
       {error && (
         <Alert variant="destructive">
-          <AlertCircle className="h-4 w-4" />
+          <AlertCircle className="h-4 w-4"/>
           <AlertTitle>Error</AlertTitle>
           <AlertDescription>{error}</AlertDescription>
         </Alert>

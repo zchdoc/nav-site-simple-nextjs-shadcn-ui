@@ -2,11 +2,11 @@ import {NextResponse} from 'next/server';
 
 export async function GET(request: Request) {
   const {searchParams} = new URL(request.url);
-  const serverUrl = 'http' + '://' + 'a2.4000063966.com:81';
+  // a2.4000063966.com:81  127.0.0.1:8081
+  const serverUrl = 'http' + '://' + '127.0.0.1:8081';
   try {
     // console.info("searchParams:", searchParams)
-
-    const response = await fetch(`${serverUrl}/xb/zk/attendance/record.do?${searchParams}`);
+    const response = await fetch(`${serverUrl}/xb/zk/attendance/v2/record.do?${searchParams}`);
 
     if (!response.ok) {
       // throw new Error(`HTTP error! status: ${response.status}`);

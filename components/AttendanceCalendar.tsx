@@ -1,5 +1,6 @@
 import React from "react";
-import {Badge, Calendar, Tooltip, theme, ConfigProvider} from "antd";
+import {Badge, Calendar, Tooltip, DatePicker} from "antd";
+import {theme, ConfigProvider, Alert} from "antd";
 import type {Dayjs} from "dayjs";
 import dayjs from "dayjs";
 
@@ -73,9 +74,7 @@ const AttendanceCalendar: React.FC<AttendanceCalendarProps> = ({
   };
 
   return (
-    <ConfigProvider locale={locale} theme={{algorithm: theme.darkAlgorithm,}}>
-      <Calendar cellRender={dateCellRender}/>
-    </ConfigProvider>
+    <Calendar cellRender={dateCellRender} style={{borderRadius: "20px"}}/>
   );
 };
 
