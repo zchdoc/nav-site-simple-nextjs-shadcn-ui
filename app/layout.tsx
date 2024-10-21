@@ -1,5 +1,5 @@
 import './globals.css';
-// import 'antd/dist/reset.css';  // 添加这一行
+import 'antd/dist/reset.css';  // 添加这一行
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { ThemeProvider } from "@/components/theme-provider"

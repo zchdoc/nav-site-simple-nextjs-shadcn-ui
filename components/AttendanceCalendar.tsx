@@ -29,13 +29,12 @@ interface AttendanceCalendarProps {
 }
 
 const AttendanceCalendar: React.FC<AttendanceCalendarProps> = ({
-                                                                 attendanceData,
-                                                               }) => {
+  attendanceData,
+}) => {
   const dateCellRender = (value: Dayjs) => {
     const date = value.format("YYYY-MM-DD");
     const records = attendanceData[date];
-    console.info('attendanceData:', attendanceData);
-    console.info('records:', records);
+
     if (!records || records.length === 0) {
       return null;
     }

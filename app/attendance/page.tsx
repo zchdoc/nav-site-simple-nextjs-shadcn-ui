@@ -1,33 +1,22 @@
 "use client"
 
-import {useState, useEffect} from "react"
-import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card"
-import {Button} from "@/components/ui/button"
-import {Input} from "@/components/ui/input"
-import {Label} from "@/components/ui/label"
-import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert"
-import {AlertCircle} from "lucide-react"
-import {Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger} from "@/components/ui/dialog"
-// import { Calendar } from "@/components/ui/calendar"
-import {DatePicker} from "antd";
-import {format} from "date-fns"
+import { useState, useEffect } from "react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { AlertCircle } from "lucide-react"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Calendar } from "@/components/ui/calendar"
+import { format } from "date-fns"
 import AttendanceCalendar from "@/components/AttendanceCalendar"
-import AttendanceCalendarTest from "@/components/AtNew";
 
 export default function AttendancePage() {
   const [dateTime, setDateTime] = useState(new Date())
   const [dateTimeText, setDateTimeText] = useState("")
   const [userNo, setUserNo] = useState("")
-  type AttendanceRecord = {
-    date: string;
-    time: string;
-    signInStateStr: string;
-  };
-
-  type AttendanceData = {
-    [key: string]: AttendanceRecord[];
-  };
-  const [attendanceRecords, setAttendanceRecords] = useState<AttendanceRecord[]>([]);
+  const [attendanceRecords, setAttendanceRecords] = useState([]);
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false)
   const [isTimePickerOpen, setIsTimePickerOpen] = useState(false)
   const [btnConfirmLoading, setBtnConfirmLoading] = useState(false)
@@ -39,7 +28,7 @@ export default function AttendancePage() {
   }, [dateTime])
 
   const handleDateSelect = (date: Date | undefined) => {
-    if (date) { // 确保 date 不是 undefined
+    if (date) {
       setDateTime((prev) => new Date(date.setHours(prev.getHours(), prev.getMinutes(), prev.getSeconds())));
       setIsDatePickerOpen(false);
       setIsTimePickerOpen(true);
@@ -57,18 +46,15 @@ export default function AttendancePage() {
     setIsTimePickerOpen(false);
   };
 
-
   const doMockAttendanceCustom = async () => {
     setBtnConfirmLoading(true)
     setError(null)
     try {
       await new Promise((resolve) => setTimeout(resolve, 1000))
-      console.log("Attendance recorded:", {userNo, dateTimeText})
-    }
-    catch (err) {
+      console.log("Attendance recorded:", { userNo, dateTimeText })
+    } catch (err) {
       setError("Failed to record attendance. Please try again.")
-    }
-    finally {
+    } finally {
       setBtnConfirmLoading(false)
     }
   }
@@ -78,11 +64,7 @@ export default function AttendancePage() {
     setError(null);
     try {
       let beginOfMonth = format(new Date(dateTime.getFullYear(), dateTime.getMonth(), 1), "yyyy-MM-dd HH:mm:ss");
-      console.log("beginOfMonth", beginOfMonth)
       let endOfMonth = format(new Date(dateTime.getFullYear(), dateTime.getMonth() + 1, 0, 23, 59, 59), "yyyy-MM-dd HH:mm:ss");
-      console.log("endOfMonth", endOfMonth)
-      endOfMonth = '2024-10-10 23:59:59';
-      console.log("endOfMonth2", endOfMonth)
       const requestData = {
         userNo: userNo || '3000002',
         timeStart: beginOfMonth,
@@ -99,23 +81,26 @@ export default function AttendancePage() {
       }
       const attendanceData = await response.json();
       setAttendanceRecords(attendanceData);
-    }
-    catch (err) {
+    } catch (err) {
       console.error('Error fetching attendance records:', err);
       setError(err instanceof Error ? err.message : "Failed to fetch attendance records. Please try again.");
-    }
-    finally {
+    } finally {
       setBtnQueryLoading(false);
     }
   };
 
-  const formatAttendanceData = (records: AttendanceRecord[]): AttendanceData => {
-    const formattedData: AttendanceData = {};
-    records.forEach(record => {
-      if (!formattedData[record.date]) {
-        formattedData[record.date] = [];
-      }
-      formattedData[record.date].push(record);
+  const formatAttendanceData = (records) => {
+    const formattedData = {};
+    records.forEach(dayRecords => {
+      dayRecords.forEach(record => {
+        if (!formattedData[record.date]) {
+          formattedData[record.date] = [];
+        }
+        formattedData[record.date].push({
+          time: record.time,
+          signInStateStr: record.signInStateStr
+        });
+      });
     });
     return formattedData;
   };
@@ -123,6 +108,7 @@ export default function AttendancePage() {
   return (
     <div className="container mx-auto p-4 space-y-4">
       <h1 className="text-3xl font-bold">Attendance Clock-in</h1>
+
       <Card>
         <CardHeader>
           <CardTitle>Clock-in Details</CardTitle>
@@ -138,21 +124,19 @@ export default function AttendancePage() {
                 onClick={() => setIsDatePickerOpen(true)}
               />
               <Dialog open={isDatePickerOpen} onOpenChange={setIsDatePickerOpen}>
-                <DialogContent aria-describedby={"date-picker-description"}>
+                <DialogContent>
                   <DialogHeader>
                     <DialogTitle>Select Date</DialogTitle>
                   </DialogHeader>
-                  {/*<Calendar*/}
-                  {/*  mode="single"*/}
-                  {/*  selected={dateTime}*/}
-                  {/*  onSelect={handleDateSelect}*/}
-                  {/*  className="rounded-md border"*/}
-                  {/*/>*/}
-                  <DatePicker/>
+                  <Calendar
+                    mode="single"
+                    selected={dateTime}
+                    onSelect={handleDateSelect}
+                  />
                 </DialogContent>
               </Dialog>
               <Dialog open={isTimePickerOpen} onOpenChange={setIsTimePickerOpen}>
-                <DialogContent aria-describedby={"time-picker-description"}>
+                <DialogContent>
                   <DialogHeader>
                     <DialogTitle>Select Time</DialogTitle>
                   </DialogHeader>
@@ -165,11 +149,13 @@ export default function AttendancePage() {
               </Dialog>
             </div>
           </div>
+
           <Button onClick={doMockAttendanceCustom} disabled={btnConfirmLoading}>
             {btnConfirmLoading ? "Processing..." : "Confirm Clock-in"}
           </Button>
         </CardContent>
       </Card>
+
       <Card>
         <CardHeader>
           <CardTitle>Attendance Records</CardTitle>
@@ -184,18 +170,20 @@ export default function AttendancePage() {
               placeholder="Enter user number"
             />
           </div>
+
           <Button onClick={doQueryAttendanceRecord} disabled={btnQueryLoading}>
             {btnQueryLoading ? "Querying..." : "Query Records"}
           </Button>
+
           {attendanceRecords.length > 0 && (
-            <AttendanceCalendar attendanceData={formatAttendanceData(attendanceRecords)}/>
+            <AttendanceCalendar attendanceData={formatAttendanceData(attendanceRecords)} />
           )}
-          {/*<AttendanceCalendarTest />*/}
         </CardContent>
       </Card>
+
       {error && (
         <Alert variant="destructive">
-          <AlertCircle className="h-4 w-4"/>
+          <AlertCircle className="h-4 w-4" />
           <AlertTitle>Error</AlertTitle>
           <AlertDescription>{error}</AlertDescription>
         </Alert>
