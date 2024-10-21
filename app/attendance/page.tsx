@@ -8,8 +8,11 @@ import { Label } from "@/components/ui/label"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { AlertCircle } from "lucide-react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+// import { Calendar } from "@/components/ui/calendar"
 import { Calendar } from "@/components/ui/calendar"
 import { format } from "date-fns"
+import AttendanceCalendar from "@/components/AttendanceCalendar"
+import AttendanceCalendarTest from "@/components/AtNew";
 
 export default function AttendancePage() {
   const [dateTime, setDateTime] = useState(new Date())
@@ -17,12 +20,12 @@ export default function AttendancePage() {
   const [userNo, setUserNo] = useState("")
   type AttendanceRecord = {
     date: string;
-    records: {
-      time: string;
-      userName: string;
-      signInStateStr: string;
-      signInState: number;
-    }[];
+    time: string;
+    signInStateStr: string;
+  };
+
+  type AttendanceData = {
+    [key: string]: AttendanceRecord[];
   };
   const [attendanceRecords, setAttendanceRecords] = useState<AttendanceRecord[]>([]);
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false)
@@ -35,11 +38,6 @@ export default function AttendancePage() {
     setDateTimeText(format(dateTime, "yyyy-MM-dd HH:mm:ss"))
   }, [dateTime])
 
-  // const handleDateSelect = (date: Date) => {
-  //   setDateTime((prev) => new Date(date.setHours(prev.getHours(), prev.getMinutes(), prev.getSeconds())))
-  //   setIsDatePickerOpen(false)
-  //   setIsTimePickerOpen(true)
-  // }
   const handleDateSelect = (date: Date | undefined) => {
     if (date) { // 确保 date 不是 undefined
       setDateTime((prev) => new Date(date.setHours(prev.getHours(), prev.getMinutes(), prev.getSeconds())));
@@ -49,8 +47,14 @@ export default function AttendancePage() {
   }
 
   const handleTimeSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedTime = e.target.value;  // 获取用户选择的时间
-    // 在这里处理选择的时间
+    const selectedTime = e.target.value;
+    const [hours, minutes] = selectedTime.split(':');
+    setDateTime((prev) => {
+      const newDate = new Date(prev);
+      newDate.setHours(parseInt(hours), parseInt(minutes));
+      return newDate;
+    });
+    setIsTimePickerOpen(false);
   };
 
 
@@ -60,9 +64,11 @@ export default function AttendancePage() {
     try {
       await new Promise((resolve) => setTimeout(resolve, 1000))
       console.log("Attendance recorded:", { userNo, dateTimeText })
-    } catch (err) {
+    }
+    catch (err) {
       setError("Failed to record attendance. Please try again.")
-    } finally {
+    }
+    finally {
       setBtnConfirmLoading(false)
     }
   }
@@ -92,19 +98,31 @@ export default function AttendancePage() {
         throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
       }
       const attendanceData = await response.json();
-      console.info("attendanceData:", attendanceData)
-      console.info("attendanceData:", JSON.stringify(attendanceData))
-    } catch (err) {
+      setAttendanceRecords(attendanceData);
+    }
+    catch (err) {
       console.error('Error fetching attendance records:', err);
       setError(err instanceof Error ? err.message : "Failed to fetch attendance records. Please try again.");
-    } finally {
+    }
+    finally {
       setBtnQueryLoading(false);
     }
   };
+
+  const formatAttendanceData = (records: AttendanceRecord[]): AttendanceData => {
+    const formattedData: AttendanceData = {};
+    records.forEach(record => {
+      if (!formattedData[record.date]) {
+        formattedData[record.date] = [];
+      }
+      formattedData[record.date].push(record);
+    });
+    return formattedData;
+  };
+
   return (
     <div className="container mx-auto p-4 space-y-4">
       <h1 className="text-3xl font-bold">Attendance Clock-in</h1>
-
       <Card>
         <CardHeader>
           <CardTitle>Clock-in Details</CardTitle>
@@ -120,7 +138,7 @@ export default function AttendancePage() {
                 onClick={() => setIsDatePickerOpen(true)}
               />
               <Dialog open={isDatePickerOpen} onOpenChange={setIsDatePickerOpen}>
-                <DialogContent>
+                <DialogContent aria-describedby={"date-picker-description"}>
                   <DialogHeader>
                     <DialogTitle>Select Date</DialogTitle>
                   </DialogHeader>
@@ -128,11 +146,12 @@ export default function AttendancePage() {
                     mode="single"
                     selected={dateTime}
                     onSelect={handleDateSelect}
+                    className="rounded-md border"
                   />
                 </DialogContent>
               </Dialog>
               <Dialog open={isTimePickerOpen} onOpenChange={setIsTimePickerOpen}>
-                <DialogContent>
+                <DialogContent aria-describedby={"time-picker-description"}>
                   <DialogHeader>
                     <DialogTitle>Select Time</DialogTitle>
                   </DialogHeader>
@@ -145,13 +164,11 @@ export default function AttendancePage() {
               </Dialog>
             </div>
           </div>
-
           <Button onClick={doMockAttendanceCustom} disabled={btnConfirmLoading}>
             {btnConfirmLoading ? "Processing..." : "Confirm Clock-in"}
           </Button>
         </CardContent>
       </Card>
-
       <Card>
         <CardHeader>
           <CardTitle>Attendance Records</CardTitle>
@@ -166,28 +183,15 @@ export default function AttendancePage() {
               placeholder="Enter user number"
             />
           </div>
-
           <Button onClick={doQueryAttendanceRecord} disabled={btnQueryLoading}>
             {btnQueryLoading ? "Querying..." : "Query Records"}
           </Button>
-
-          {attendanceRecords.map((dayRecord, dayIndex) => (
-            <Card key={dayIndex}>
-              <CardHeader>
-                <CardTitle>{dayRecord.date} ({dayRecord.records.length} records)</CardTitle>
-              </CardHeader>
-              <CardContent>
-                {dayRecord.records.map((record, recordIndex) => (
-                  <div key={recordIndex} className="py-2 border-b last:border-b-0">
-                    <p>{record.time} - {record.userName} - {record.signInStateStr}</p>
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
-          ))}
+          {attendanceRecords.length > 0 && (
+            <AttendanceCalendar attendanceData={formatAttendanceData(attendanceRecords)} />
+          )}
+          <AttendanceCalendarTest />
         </CardContent>
       </Card>
-
       {error && (
         <Alert variant="destructive">
           <AlertCircle className="h-4 w-4" />

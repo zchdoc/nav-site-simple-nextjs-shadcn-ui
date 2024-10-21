@@ -1,8 +1,10 @@
 import './globals.css';
+// import 'antd/dist/reset.css';  // 添加这一行
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { ThemeProvider } from "@/components/theme-provider"
 
+// ... 其余代码保持不变
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
