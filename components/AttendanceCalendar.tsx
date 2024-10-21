@@ -1,9 +1,5 @@
 import React from "react";
-import {
-  Badge, Calendar, Tooltip,
-  theme, BadgeProps, CalendarProps,
-  ConfigProvider, DatePicker
-} from "antd";
+import {Badge, Calendar, Tooltip, theme, ConfigProvider} from "antd";
 import type {Dayjs} from "dayjs";
 import dayjs from "dayjs";
 
@@ -29,8 +25,8 @@ interface AttendanceCalendarProps {
 }
 
 const AttendanceCalendar: React.FC<AttendanceCalendarProps> = ({
-  attendanceData,
-}) => {
+                                                                 attendanceData,
+                                                               }) => {
   const dateCellRender = (value: Dayjs) => {
     const date = value.format("YYYY-MM-DD");
     const records = attendanceData[date];

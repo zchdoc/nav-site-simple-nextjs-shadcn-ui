@@ -77,7 +77,8 @@ export default function AttendancePage() {
       const response = await fetch(`/api/attendance?${queryParams}`);
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+        // throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+        setError(errorData.message || `HTTP error! status: ${response.status}`);
       }
       const attendanceData = await response.json();
       setAttendanceRecords(attendanceData);
@@ -175,9 +176,10 @@ export default function AttendancePage() {
             {btnQueryLoading ? "Querying..." : "Query Records"}
           </Button>
 
-          {attendanceRecords.length > 0 && (
-            <AttendanceCalendar attendanceData={formatAttendanceData(attendanceRecords)} />
-          )}
+          {/*{attendanceRecords.length > 0 && (*/}
+          {/*  <AttendanceCalendar attendanceData={formatAttendanceData(attendanceRecords)} />*/}
+          {/*)}*/}
+          <AttendanceCalendar attendanceData={formatAttendanceData(attendanceRecords)} />
         </CardContent>
       </Card>
 
