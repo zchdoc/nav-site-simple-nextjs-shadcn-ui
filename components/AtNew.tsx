@@ -1,5 +1,5 @@
 import React from "react";
-import {BadgeProps, CalendarProps, ConfigProvider, DatePicker} from "antd";
+import {BadgeProps, CalendarProps, ConfigProvider, DatePicker, theme} from "antd";
 import {Badge, Calendar} from "antd";
 import type {Dayjs} from "dayjs";
 import locale from 'antd/locale/zh_CN';
@@ -61,7 +61,7 @@ const AttendanceCalendarTest: React.FC = () => {
   const dateCellRender = (value: Dayjs) => {
     const listData = getListData(value);
     return (
-      <ConfigProvider locale={locale}>
+      <ConfigProvider locale={locale} theme={{algorithm: theme.darkAlgorithm,}}>
         <ul className="events">
           {listData.map((item) => (
             <li key={item.content}>
@@ -82,7 +82,7 @@ const AttendanceCalendarTest: React.FC = () => {
     return info.originNode;
   };
 
-  return <Calendar cellRender={cellRender}/>;
+  return  <ConfigProvider locale={locale} theme={{algorithm: theme.darkAlgorithm,}}><Calendar cellRender={cellRender}/></ConfigProvider>;
 };
 
 export default AttendanceCalendarTest;

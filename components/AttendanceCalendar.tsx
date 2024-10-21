@@ -1,7 +1,18 @@
 import React from "react";
-import { Calendar, Badge, Tooltip } from "antd";
-import type { Dayjs } from "dayjs";
+import {
+  Badge, Calendar, Tooltip,
+  theme, BadgeProps, CalendarProps,
+  ConfigProvider, DatePicker
+} from "antd";
+import type {Dayjs} from "dayjs";
 import dayjs from "dayjs";
+
+import locale from 'antd/locale/zh_CN';
+
+
+import 'dayjs/locale/zh-cn';
+
+dayjs.locale('zh-cn');
 
 interface AttendanceRecord {
   date: string;
@@ -18,32 +29,35 @@ interface AttendanceCalendarProps {
 }
 
 const AttendanceCalendar: React.FC<AttendanceCalendarProps> = ({
-  attendanceData,
-}) => {
+                                                                 attendanceData,
+                                                               }) => {
   const dateCellRender = (value: Dayjs) => {
     const date = value.format("YYYY-MM-DD");
     const records = attendanceData[date];
-
+    console.info('attendanceData:', attendanceData);
+    console.info('records:', records);
     if (!records || records.length === 0) {
       return null;
     }
 
     return (
-      <ul className="events">
-        {records.map((record, index) => (
-          <Tooltip
-            key={index}
-            title={`${record.time} - ${record.signInStateStr}`}
-          >
-            <li>
-              <Badge
-                status={getBadgeStatus(record.signInStateStr)}
-                text={`${record.time.split(":")[0]}:${record.time.split(":")[1]} ${record.signInStateStr}`}
-              />
-            </li>
-          </Tooltip>
-        ))}
-      </ul>
+      <ConfigProvider locale={locale} theme={{algorithm: theme.darkAlgorithm,}}>
+        <ul className="events">
+          {records.map((record, index) => (
+            <Tooltip
+              key={index}
+              title={`${record.time} - ${record.signInStateStr}`}
+            >
+              <li>
+                <Badge
+                  status={getBadgeStatus(record.signInStateStr)}
+                  text={`${record.time.split(":")[0]}:${record.time.split(":")[1]} ${record.signInStateStr}`}
+                />
+              </li>
+            </Tooltip>
+          ))}
+        </ul>
+      </ConfigProvider>
     );
   };
 
@@ -63,7 +77,11 @@ const AttendanceCalendar: React.FC<AttendanceCalendarProps> = ({
     }
   };
 
-  return <Calendar cellRender={dateCellRender} />;
+  return (
+    <ConfigProvider locale={locale} theme={{algorithm: theme.darkAlgorithm,}}>
+      <Calendar cellRender={dateCellRender}/>
+    </ConfigProvider>
+  );
 };
 
 export default AttendanceCalendar;

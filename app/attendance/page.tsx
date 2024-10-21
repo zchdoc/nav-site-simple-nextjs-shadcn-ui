@@ -8,7 +8,6 @@ import { Label } from "@/components/ui/label"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { AlertCircle } from "lucide-react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-// import { Calendar } from "@/components/ui/calendar"
 import { Calendar } from "@/components/ui/calendar"
 import { format } from "date-fns"
 import AttendanceCalendar from "@/components/AttendanceCalendar"
@@ -189,7 +188,7 @@ export default function AttendancePage() {
           {attendanceRecords.length > 0 && (
             <AttendanceCalendar attendanceData={formatAttendanceData(attendanceRecords)} />
           )}
-          <AttendanceCalendarTest />
+          {/*<AttendanceCalendarTest />*/}
         </CardContent>
       </Card>
       {error && (
