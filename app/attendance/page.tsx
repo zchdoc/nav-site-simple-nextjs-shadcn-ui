@@ -1,15 +1,16 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { AlertCircle } from "lucide-react"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Calendar } from "@/components/ui/calendar"
-import { format } from "date-fns"
+import {useState, useEffect} from "react"
+import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card"
+import {Button} from "@/components/ui/button"
+import {Input} from "@/components/ui/input"
+import {Label} from "@/components/ui/label"
+import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert"
+import {AlertCircle} from "lucide-react"
+import {Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger} from "@/components/ui/dialog"
+// import { Calendar } from "@/components/ui/calendar"
+import {DatePicker} from "antd";
+import {format} from "date-fns"
 import AttendanceCalendar from "@/components/AttendanceCalendar"
 import AttendanceCalendarTest from "@/components/AtNew";
 
@@ -62,7 +63,7 @@ export default function AttendancePage() {
     setError(null)
     try {
       await new Promise((resolve) => setTimeout(resolve, 1000))
-      console.log("Attendance recorded:", { userNo, dateTimeText })
+      console.log("Attendance recorded:", {userNo, dateTimeText})
     }
     catch (err) {
       setError("Failed to record attendance. Please try again.")
@@ -141,12 +142,13 @@ export default function AttendancePage() {
                   <DialogHeader>
                     <DialogTitle>Select Date</DialogTitle>
                   </DialogHeader>
-                  <Calendar
-                    mode="single"
-                    selected={dateTime}
-                    onSelect={handleDateSelect}
-                    className="rounded-md border"
-                  />
+                  {/*<Calendar*/}
+                  {/*  mode="single"*/}
+                  {/*  selected={dateTime}*/}
+                  {/*  onSelect={handleDateSelect}*/}
+                  {/*  className="rounded-md border"*/}
+                  {/*/>*/}
+                  <DatePicker/>
                 </DialogContent>
               </Dialog>
               <Dialog open={isTimePickerOpen} onOpenChange={setIsTimePickerOpen}>
@@ -186,14 +188,14 @@ export default function AttendancePage() {
             {btnQueryLoading ? "Querying..." : "Query Records"}
           </Button>
           {attendanceRecords.length > 0 && (
-            <AttendanceCalendar attendanceData={formatAttendanceData(attendanceRecords)} />
+            <AttendanceCalendar attendanceData={formatAttendanceData(attendanceRecords)}/>
           )}
           {/*<AttendanceCalendarTest />*/}
         </CardContent>
       </Card>
       {error && (
         <Alert variant="destructive">
-          <AlertCircle className="h-4 w-4" />
+          <AlertCircle className="h-4 w-4"/>
           <AlertTitle>Error</AlertTitle>
           <AlertDescription>{error}</AlertDescription>
         </Alert>
