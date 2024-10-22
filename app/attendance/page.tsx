@@ -10,11 +10,8 @@ import { format } from "date-fns";
 import AttendanceCalendar from "@/components/AttendanceCalendar";
 import { ConfigProvider, DatePicker, Space, theme } from "antd";
 import dayjs from "dayjs";
-
 import locale from "antd/locale/zh_CN";
-
 import "dayjs/locale/zh-cn";
-import { bool } from "prop-types";
 
 dayjs.locale("zh-cn");
 
@@ -225,12 +222,12 @@ export default function AttendancePage() {
                   }
                 }}
               />
-                          <Button
-              onClick={doQueryAttendanceRecord}
-              disabled={btnQueryLoading}
-            >
-              {btnQueryLoading ? "Querying..." : "Query Records"}
-            </Button>
+              <Button
+                onClick={doQueryAttendanceRecord}
+                disabled={btnQueryLoading}
+              >
+                {btnQueryLoading ? "Querying..." : "Query Records"}
+              </Button>
             </Space>
             <br />
 

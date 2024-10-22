@@ -1,6 +1,7 @@
 import React from "react";
 import {Badge, Calendar, Tooltip, DatePicker} from "antd";
-import {theme, ConfigProvider, Alert} from "antd";
+import {theme, ConfigProvider, Alert,Col, Radio, Row, Select} from "antd";
+import { HolidayUtil, Lunar } from 'lunar-typescript';
 import type {Dayjs} from "dayjs";
 import dayjs from "dayjs";
 
@@ -73,8 +74,91 @@ const AttendanceCalendar: React.FC<AttendanceCalendarProps> = ({
     }
   };
 
+  const getYearLabel = (year: number) => {
+    const d = Lunar.fromDate(new Date(year + 1, 0));
+    return `${d.getYearInChinese()}年（${d.getYearInGanZhi()}${d.getYearShengXiao()}年）`;
+  };
+
+  const getMonthLabel = (month: number, value: Dayjs) => {
+    const d = Lunar.fromDate(new Date(value.year(), month));
+    const lunar = d.getMonthInChinese();
+    return `${month + 1}月（${lunar}月）`;
+  };
+
   return (
-    <Calendar cellRender={dateCellRender} style={{borderRadius: "20px"}}/>
+    <Calendar 
+    cellRender={dateCellRender} 
+    fullscreen={false}
+    headerRender={({ value, type, onChange, onTypeChange }) => {
+      const start = 0;
+      const end = 12;
+      const monthOptions = [];
+
+      let current = value.clone();
+      const localeData = value.localeData();
+      const months = [];
+      for (let i = 0; i < 12; i++) {
+        current = current.month(i);
+        months.push(localeData.monthsShort(current));
+      }
+
+      for (let i = start; i < end; i++) {
+        monthOptions.push({
+          label: getMonthLabel(i, value),
+          value: i,
+        });
+      }
+
+      const year = value.year();
+      const month = value.month();
+      const options = [];
+      for (let i = year - 10; i < year + 10; i += 1) {
+        options.push({
+          label: getYearLabel(i),
+          value: i,
+        });
+      }
+      return (
+        <Row justify="end" gutter={8} style={{ padding: 8 }}>
+          <Col>
+            <Select
+              size="small"
+              popupMatchSelectWidth={false}
+              className="my-year-select"
+              value={year}
+              options={options}
+              onChange={(newYear) => {
+                const now = value.clone().year(newYear);
+                onChange(now);
+              }}
+            />
+          </Col>
+          <Col>
+            <Select
+              size="small"
+              popupMatchSelectWidth={false}
+              value={month}
+              options={monthOptions}
+              onChange={(newMonth) => {
+                const now = value.clone().month(newMonth);
+                onChange(now);
+              }}
+            />
+          </Col>
+          <Col>
+            <Radio.Group
+              size="small"
+              onChange={(e) => onTypeChange(e.target.value)}
+              value={type}
+            >
+              <Radio.Button value="month">月</Radio.Button>
+              <Radio.Button value="year">年</Radio.Button>
+            </Radio.Group>
+          </Col>
+        </Row>
+      );
+    }}
+    style={{borderRadius: "20px"}}/>
   );
 };
 
