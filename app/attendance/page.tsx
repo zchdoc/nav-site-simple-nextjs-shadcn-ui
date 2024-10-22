@@ -4,11 +4,8 @@ import React, {useState, useEffect} from "react"
 import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card"
 import {Button} from "@/components/ui/button"
 import {Input} from "@/components/ui/input"
-import {Label} from "@/components/ui/label"
 import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert"
 import {AlertCircle} from "lucide-react"
-import {Dialog, DialogContent, DialogHeader, DialogTitle} from "@/components/ui/dialog"
-import {Calendar} from "@/components/ui/calendar"
 import {format} from "date-fns"
 import AttendanceCalendar from "@/components/AttendanceCalendar"
 import {ConfigProvider, DatePicker, Space, theme} from 'antd';
@@ -112,7 +109,7 @@ export default function AttendancePage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ data: data }),
+        body: JSON.stringify({data: data}),
       })
 
       if (!response.ok) {
@@ -123,11 +120,20 @@ export default function AttendancePage() {
       console.log("Attendance recorded:", result)
 
       alert('OK: ' + JSON.stringify(result))
-    } catch (err) {
-      console.error("Error recording attendance:", err)
-      setError("Failed to record attendance. Please try again.")
-      alert('FAIL: ' + err.message)
-    } finally {
+    }
+    catch (err) {
+      console.error("Error recording attendance:", err);
+      setError("Failed to record attendance. Please try again.");
+
+      // 类型断言
+      if (err instanceof Error) {
+        alert('FAIL: ' + err.message);
+      }
+      else {
+        alert(err);
+      }
+    }
+    finally {
       setTimeout(() => {
         setBtnConfirmLoading(false)
       }, 1000)
@@ -166,20 +172,46 @@ export default function AttendancePage() {
       setBtnQueryLoading(false);
     }
   };
-  const formatAttendanceData = (records) => {
-    const formattedData = {};
-    console.info('records:', records)
+
+  interface AttendanceRecord {
+    date: string;
+    time: string;
+    signInStateStr: string;
+  }
+
+  // const formatAttendanceData = (records) => {
+  //   const formattedData = {};
+  //   console.info('records:', records)
+  //   records.forEach(dayRecords => {
+  //     dayRecords.forEach(record => {
+  //       if (!formattedData[record.date]) {
+  //         formattedData[record.date] = [];
+  //       }
+  //       formattedData[record.date].push({
+  //         time: record.time,
+  //         signInStateStr: record.signInStateStr
+  //       });
+  //     });
+  //   });
+  //   return formattedData;
+  // };
+  const formatAttendanceData = (records: AttendanceRecord[][]) => {
+    const formattedData: { [key: string]: AttendanceRecord[] } = {};
+    console.info('records:', records);
+
     records.forEach(dayRecords => {
       dayRecords.forEach(record => {
         if (!formattedData[record.date]) {
           formattedData[record.date] = [];
         }
         formattedData[record.date].push({
+          date: record.date, // 确保包含 date 属性
           time: record.time,
-          signInStateStr: record.signInStateStr
+          signInStateStr: record.signInStateStr,
         });
       });
     });
+
     return formattedData;
   };
   const {RangePicker} = DatePicker;
@@ -210,7 +242,8 @@ export default function AttendancePage() {
                     // Format the date to match your desired format
                     const formattedDate = date.format("YYYY-MM-DD HH:mm:ss")
                     setClockInDateTime(formattedDate)
-                  } else {
+                  }
+                  else {
                     // If the date is cleared, reset the state
                     setClockInDateTime("")
                   }

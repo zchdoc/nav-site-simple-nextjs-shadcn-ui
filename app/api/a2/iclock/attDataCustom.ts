@@ -4,8 +4,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method === 'POST') {
     const {sn, table, Stamp} = req.query
     const {data} = req.body
-
-    const serverUrl = 'http://127.0.0.1:8081'
+    // a2.4000063966.com:81  127.0.0.1:8081
+    const serverUrl = 'http' + '://' + 'a2.4000063966.com:81'
     const url = `${serverUrl}/iclock/attDataCustom?sn=${sn}&table=${table}&Stamp=${Stamp}`
 
     try {
@@ -26,7 +26,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
     catch (error) {
       console.error('Error:', error)
-      res.status(500).json({message: 'Internal server error', error: error.message})
+      if (error instanceof Error) {
+        res.status(500).json({message: 'Internal server error', error: error.message})
+      }
+      else {
+        res.status(500).json({message: 'Internal server error', error: 'Unknown error'})
+      }
     }
   }
   else {

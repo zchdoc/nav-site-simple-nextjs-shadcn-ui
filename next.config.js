@@ -6,8 +6,8 @@ const nextConfig = {
   images: {unoptimized: true},
   async rewrites() {
     // a2.4000063966.com:81  127.0.0.1:8081
-    const serverUrl = 'http' + '://' + '127.0.0.1:8081';
-    const serverUrlA3 = 'http' + '://' + '127.0.0.1:8081';
+    const serverUrl = 'http' + '://' + 'a2.4000063966.com:81';
+    const serverUrlA3 = 'http' + '://' + 'a2.4000063966.com:81';
     return [
       {
         source: "/api/a2/iclock/attDataCustom",
