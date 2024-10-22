@@ -36,59 +36,6 @@ export default function AttendancePage() {
   useEffect(() => {
     setDateTimeText(format(dateTime, "yyyy-MM-dd HH:mm:ss"))
   }, [dateTime])
-  // const doMockAttendanceCustom = async () => {
-  //   setBtnConfirmLoading(true)
-  //   setError(null)
-  //   try {
-  //     // await new Promise((resolve) => setTimeout(resolve, 1000))
-  //     console.log("Attendance recorded:", {clockInUserNo, clockInDateTime})
-  //   }
-  //   catch (err) {
-  //     setError("Failed to record attendance. Please try again.")
-  //   }
-  //   finally {
-  //     setBtnConfirmLoading(false)
-  //   }
-  // }
-
-  // const doMockAttendanceCustom = async () => {
-  //   setBtnConfirmLoading(true)
-  //   setError(null)
-  //   try {
-  //     // Assuming verifiedNumbersMap is defined elsewhere in your component
-  //     let userNo = clockInUserNo // or use verifiedNumbersMap.get(userVerifyNumber) if needed
-  //     let postTime = clockInDateTime
-  //     let data = `${userNo}\t${postTime}\t0\t15\t\t0\t0`
-  //
-  //     const response = await fetch(`/api/iclock/attDataCustom?sn=CJDE193560303&table=ATTLOG&Stamp=${postTime}`, {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: JSON.stringify({ data: data }),
-  //     })
-  //
-  //     if (!response.ok) {
-  //       throw new Error(`HTTP error! status: ${response.status}`)
-  //     }
-  //
-  //     const result = await response.json()
-  //     console.log("Attendance recorded:", result)
-  //
-  //     // You might want to use a toast notification instead of an alert
-  //     alert('OK: ' + JSON.stringify(result))
-  //   } catch (err) {
-  //     console.error("Error recording attendance:", err)
-  //     setError("Failed to record attendance. Please try again.")
-  //     alert('FAIL: ' + err.message)
-  //   } finally {
-  //     // Delay resetting the button state
-  //     setTimeout(() => {
-  //       setBtnConfirmLoading(false)
-  //     }, 1000)
-  //   }
-  // }
-
 
   const doMockAttendanceCustom = async () => {
     setBtnConfirmLoading(true)
