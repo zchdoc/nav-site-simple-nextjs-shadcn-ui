@@ -1,14 +1,14 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertCircle } from "lucide-react";
-import { format } from "date-fns";
+import React, {useState, useEffect} from "react";
+import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
+import {Button} from "@/components/ui/button";
+import {Input} from "@/components/ui/input";
+import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert";
+import {AlertCircle} from "lucide-react";
+import {format} from "date-fns";
 import AttendanceCalendar from "@/components/AttendanceCalendar";
-import { ConfigProvider, DatePicker, Space, theme } from "antd";
+import {ConfigProvider, DatePicker, Space, theme} from "antd";
 import dayjs from "dayjs";
 import locale from "antd/locale/zh_CN";
 import "dayjs/locale/zh-cn";
@@ -52,7 +52,7 @@ export default function AttendancePage() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ data: data }),
+        body: JSON.stringify({data: data}),
       });
 
       if (!response.ok) {
@@ -69,21 +69,25 @@ export default function AttendancePage() {
 
       if (contentType && contentType.includes("application/json")) {
         result = await response.json();
-      } else {
+      }
+      else {
         result = await response.text();
       }
       alert(result);
-    } catch (err) {
+    }
+    catch (err) {
       console.error("Error recording attendance:", err);
       setError("Failed to record attendance. Please try again.");
 
       // 类型断言
       if (err instanceof Error) {
         alert("FAIL: " + err.message);
-      } else {
+      }
+      else {
         alert(err);
       }
-    } finally {
+    }
+    finally {
       setTimeout(() => {
         setBtnConfirmLoading(false);
       }, 1000);
@@ -126,14 +130,16 @@ export default function AttendancePage() {
       }
       const attendanceData = await response.json();
       setAttendanceRecords(attendanceData);
-    } catch (err) {
+    }
+    catch (err) {
       console.error("Error fetching attendance records:", err);
       setError(
         err instanceof Error
           ? err.message
           : "Failed to fetch attendance records. Please try again."
       );
-    } finally {
+    }
+    finally {
       setBtnQueryLoading(false);
     }
   };
@@ -144,22 +150,6 @@ export default function AttendancePage() {
     signInStateStr: string;
   }
 
-  // const formatAttendanceData = (records) => {
-  //   const formattedData = {};
-  //   console.info('records:', records)
-  //   records.forEach(dayRecords => {
-  //     dayRecords.forEach(record => {
-  //       if (!formattedData[record.date]) {
-  //         formattedData[record.date] = [];
-  //       }
-  //       formattedData[record.date].push({
-  //         time: record.time,
-  //         signInStateStr: record.signInStateStr
-  //       });
-  //     });
-  //   });
-  //   return formattedData;
-  // };
   const formatAttendanceData = (records: AttendanceRecord[][]) => {
     const formattedData: { [key: string]: AttendanceRecord[] } = {};
     // 判断 records 是否为空数组 是否为 undefined 是否为 null
@@ -183,7 +173,7 @@ export default function AttendancePage() {
 
     return formattedData;
   };
-  const { RangePicker } = DatePicker;
+  const {RangePicker} = DatePicker;
   return (
     <div className="container mx-auto p-4 space-y-4">
       <h1 className="text-3xl font-bold">Attendance Clock-in</h1>
@@ -196,7 +186,7 @@ export default function AttendancePage() {
           {/*{attendanceRecords.length > 0 && (<AttendanceCalendar )}*/}
           <ConfigProvider
             locale={locale}
-            theme={{ algorithm: theme.darkAlgorithm }}
+            theme={{algorithm: theme.darkAlgorithm}}
           >
             <Space>
               <Input
@@ -215,7 +205,8 @@ export default function AttendancePage() {
                     // 设置开始日期和结束日期
                     setBeginOfMonth(dateStrings[0]); // 获取格式化后的开始日期字符串
                     setEndOfMonth(dateStrings[1]); // 获取格式化后的结束日期字符串
-                  } else {
+                  }
+                  else {
                     // 如果清除了日期选择器的值，则重置状态
                     setBeginOfMonth("");
                     setEndOfMonth("");
@@ -229,9 +220,8 @@ export default function AttendancePage() {
                 {btnQueryLoading ? "Querying..." : "Query Records"}
               </Button>
             </Space>
-            <br />
-
-            <br />
+            <br/>
+            <br/>
             <AttendanceCalendar
               attendanceData={formatAttendanceData(attendanceRecords)}
             />
@@ -240,7 +230,7 @@ export default function AttendancePage() {
       </Card>
       {error && (
         <Alert variant="destructive">
-          <AlertCircle className="h-4 w-4" />
+          <AlertCircle className="h-4 w-4"/>
           <AlertTitle>Error</AlertTitle>
           <AlertDescription>{error}</AlertDescription>
         </Alert>
@@ -253,7 +243,7 @@ export default function AttendancePage() {
         <CardContent className="space-y-4">
           <ConfigProvider
             locale={locale}
-            theme={{ algorithm: theme.darkAlgorithm }}
+            theme={{algorithm: theme.darkAlgorithm}}
           >
             <Space>
               <Input
@@ -267,19 +257,21 @@ export default function AttendancePage() {
                 showTime
                 allowClear
                 placeholder="模拟时间"
+                value={clockInDateTime? dayjs(new Date(clockInDateTime)) : dayjs(new Date())} 
                 onChange={(date, dateString) => {
                   if (date) {
                     // Format the date to match your desired format
                     const formattedDate = date.format("YYYY-MM-DD HH:mm:ss");
                     setClockInDateTime(formattedDate);
-                  } else {
+                  }
+                  else {
                     // If the date is cleared, reset the state
                     setClockInDateTime("");
                   }
                 }}
               />
             </Space>
-            <br />
+            <br/>
             <Button
               onClick={doMockAttendanceCustom}
               disabled={btnConfirmLoading}
