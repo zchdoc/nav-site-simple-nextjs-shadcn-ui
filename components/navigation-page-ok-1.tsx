@@ -9,8 +9,7 @@ import { ChevronRight } from "lucide-react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { RainbowButton } from "@/components/ui/rainbow-button";
-import { Mail } from "lucide-react";
-import { UnlockIcon } from "lucide-react";
+
 export function NavigationPage() {
   const [showHidden, setShowHidden] = useState(false);
   const [password, setPassword] = useState("");
@@ -20,13 +19,8 @@ export function NavigationPage() {
     latitude: number;
     longitude: number;
   } | null>(null);
-
-  // 在组件挂载时检查本地存储中的验证状态
   useEffect(() => {
-    const storedAuthStatus = localStorage.getItem("isAuthenticated");
-    if (storedAuthStatus === "true") {
-      setIsPasswordCorrect(true);
-    }
+    // getLocation()
   }, []);
 
   const handlePasswordSubmit = () => {
@@ -34,8 +28,6 @@ export function NavigationPage() {
       setIsPasswordCorrect(true);
       setShowHidden(true);
       setIsDialogOpen(false);
-      // 在本地存储中保存验证状态
-      localStorage.setItem("isAuthenticated", "true");
     } else {
       alert("Incorrect password");
     }
@@ -44,26 +36,13 @@ export function NavigationPage() {
   const toggleHiddenLinks = () => {
     if (showHidden) {
       setShowHidden(false);
+      setIsPasswordCorrect(false);
+      setPassword("");
     } else {
-      if (isPasswordCorrect) {
-        // 如果已经验证过密码，直接显示链接
-        setShowHidden(true);
-      } else {
-        // 如果还没有验证过密码，显示密码对话框
-        setIsDialogOpen(true);
-      }
+      setIsDialogOpen(true);
     }
   };
 
-  // 添加登出功能（可选）
-  const handleLogout = () => {
-    localStorage.removeItem("isAuthenticated");
-    setIsPasswordCorrect(false);
-    setShowHidden(false);
-    setPassword("");
-  };
-
-  // 其余代码保持不变...
   const getLocation = () => {
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(
@@ -88,14 +67,7 @@ export function NavigationPage() {
     <div className="space-y-4">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">常用链接</h1>
-        <div className="flex items-center gap-2">
-          {isPasswordCorrect && (
-            <Button variant="outline" size="sm" onClick={handleLogout}>
-              Reset Auth
-            </Button>
-          )}
-          <ModeToggle />
-        </div>
+        <ModeToggle />
       </div>
       {location && (
         <Card>
@@ -175,12 +147,23 @@ export function NavigationPage() {
           { name: "兴邦设备费率计算", url: "/pulse-water-billing-calc" },
           { name: "元素去重", url: "/remove-duplicates" },
           { name: "二维码生成", url: "../qr-styling/index.html" },
+          // {
+          //   name: "bs-custom",
+          //   url: "../chrome-bookmarks-simple/index.html?name=bscus",
+          // },
+          // {
+          //   name: "bs-custom-jrh",
+          //   url: "../chrome-bookmarks-simple/index.html?name=嘉荣华",
+          // },
           { name: "Attendance", url: "/attendance" },
         ]}
       />
       <Card>
         <CardHeader>
           <CardTitle>
+            {/* <Button variant="ghost" onClick={toggleHiddenLinks}>
+              {showHidden ? "Hide" : "Show"} Additional Links
+            </Button> */}
             <RainbowButton onClick={toggleHiddenLinks} className="ml-2">
               {showHidden ? "Hide" : "Show More"}
             </RainbowButton>
@@ -275,30 +258,25 @@ export function NavigationPage() {
       </Card>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent>
           <DialogHeader>
-            <DialogTitle className="text-2xl font-semibold">验证码</DialogTitle>
+            <DialogTitle>Enter Password</DialogTitle>
           </DialogHeader>
           <form
             onSubmit={(e) => {
               e.preventDefault();
               handlePasswordSubmit();
             }}
-            className="space-y-4"
           >
-            <div className="flex flex-col space-y-4">
-              <Input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Verify Code"
-                className="h-10"
-              />
-              <Button type="submit" className="h-10">
-                <span className="text-base mr-2">确认</span>
-                <UnlockIcon className="h-4 w-4" />
-              </Button>
-            </div>
+            <Input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Enter password"
+            />
+            <Button size="icon" variant="ghost" style={{ marginLeft: "auto" }}>
+              <ChevronRight className="h-4 w-4" />
+            </Button>
           </form>
         </DialogContent>
       </Dialog>

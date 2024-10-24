@@ -27,3 +27,15 @@ set HTTP_PROXY=http://127.0.0.1:10809
 set HTTPS_PROXY=http://127.0.0.1:10809
 ```
 
+```
+LMStudio:
+http://192.168.100.149:1234
+http://192.168.100.149:1234/v1/chat/completions
+qwen2.5-coder-7b-instruct
+qwen2.5-coder-7b-instruct
+
+http://192.168.100.149:1234/v1/models
+http://192.168.100.149:1234/v1/chat/completions
+http://192.168.100.149:1234/v1/completions
+http://192.168.100.149:1234/v1/embeddings
+```
