@@ -11,6 +11,7 @@ import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { RainbowButton } from "@/components/ui/rainbow-button";
 import { Mail } from "lucide-react";
 import { UnlockIcon } from "lucide-react";
+import PasswordDialog from "./PasswordDialog";
 export function NavigationPage() {
   const [showHidden, setShowHidden] = useState(false);
   const [password, setPassword] = useState("");
@@ -302,6 +303,13 @@ export function NavigationPage() {
           </form>
         </DialogContent>
       </Dialog>
+      <PasswordDialog
+        isDialogOpen={isDialogOpen}
+        setIsDialogOpen={setIsDialogOpen}
+        password={password}
+        setPassword={setPassword}
+        handlePasswordSubmit={handlePasswordSubmit}
+      />
     </div>
   );
 }
