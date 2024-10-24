@@ -1,15 +1,16 @@
 import React from "react";
-import { Badge, Calendar, Tooltip, CalendarProps } from "antd";
-import { theme, ConfigProvider, Col, Radio, Row, Select } from "antd";
-import { HolidayUtil, Lunar } from "lunar-typescript";
-import { createStyles } from "antd-style";
-import type { Dayjs } from "dayjs";
+import {Badge, Calendar, Tooltip, CalendarProps} from "antd";
+import {theme, ConfigProvider, Col, Radio, Row, Select} from "antd";
+import {HolidayUtil, Lunar} from "lunar-typescript";
+import {createStyles} from "antd-style";
+import type {Dayjs} from "dayjs";
 import classNames from "classnames";
 import dayjs from "dayjs";
 import localizedFormat from "dayjs/plugin/localizedFormat";
 import locale from "antd/locale/zh_CN";
 
 import "dayjs/locale/zh-cn";
+
 dayjs.extend(localizedFormat); // 如果需要使用格式化插件
 dayjs.locale("zh-cn");
 
@@ -26,7 +27,8 @@ interface AttendanceData {
 interface AttendanceCalendarProps {
   attendanceData: AttendanceData;
 }
-const useStyle = createStyles(({ token, css, cx }) => {
+
+const useStyle = createStyles(({token, css, cx}) => {
   const lunar = css`
     color: ${token.colorTextTertiary};
     font-size: ${token.fontSizeSM}px;
@@ -127,9 +129,9 @@ const useStyle = createStyles(({ token, css, cx }) => {
   };
 });
 const AttendanceCalendar: React.FC<AttendanceCalendarProps> = ({
-  attendanceData,
-}) => {
-  const { styles } = useStyle({ test: true });
+                                                                 attendanceData,
+                                                               }) => {
+  const {styles} = useStyle({test: true});
   const [selectDate, setSelectDate] = React.useState<Dayjs>(dayjs());
   const [panelDateDate, setPanelDate] = React.useState<Dayjs>(dayjs());
 
@@ -172,7 +174,7 @@ const AttendanceCalendar: React.FC<AttendanceCalendarProps> = ({
     return (
       <ConfigProvider
         locale={locale}
-        theme={{ algorithm: theme.darkAlgorithm }}
+        theme={{algorithm: theme.darkAlgorithm}}
       >
         <ul
           className="events"
@@ -188,13 +190,13 @@ const AttendanceCalendar: React.FC<AttendanceCalendarProps> = ({
               key={index}
               title={`${record.time} - ${record.signInStateStr}`}
             >
-              <li style={{ margin: "2px 0" }}>
+              <li style={{margin: "2px 0"}}>
                 <Badge
                   status={getBadgeStatus(record.signInStateStr)}
                   text={`${record.time.split(":")[0]}:${
                     record.time.split(":")[1]
                   } ${record.signInStateStr}`}
-                  style={{ fontSize: "12px" }}
+                  style={{fontSize: "12px"}}
                 />
               </li>
             </Tooltip>
@@ -266,7 +268,7 @@ const AttendanceCalendar: React.FC<AttendanceCalendarProps> = ({
     <Calendar
       fullCellRender={cellRender}
       fullscreen={false}
-      headerRender={({ value, type, onChange, onTypeChange }) => {
+      headerRender={({value, type, onChange, onTypeChange}) => {
         const start = 0;
         const end = 12;
         const monthOptions = [];
@@ -288,7 +290,7 @@ const AttendanceCalendar: React.FC<AttendanceCalendarProps> = ({
         }
 
         return (
-          <Row justify="end" gutter={8} style={{ padding: 8 }}>
+          <Row justify="end" gutter={8} style={{padding: 8}}>
             <Col>
               <Select
                 size="small"
@@ -327,7 +329,6 @@ const AttendanceCalendar: React.FC<AttendanceCalendarProps> = ({
           </Row>
         );
       }}
-      style={{ borderRadius: "20px" }}
     />
   );
 };
