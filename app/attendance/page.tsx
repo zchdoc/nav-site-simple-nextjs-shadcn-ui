@@ -4,9 +4,6 @@ import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-// import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert";
-import { AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertCircle } from "lucide-react";
 import { format } from "date-fns";
 import AttendanceCalendar from "@/components/AttendanceCalendar";
 import { ConfigProvider, DatePicker, Space, theme, Alert } from "antd";
@@ -130,13 +127,11 @@ export default function AttendancePage() {
         return;
       }
       const attendanceData = await response.json();
-
       // 检查 attendanceData 是否为空或未定义
       if (!attendanceData || attendanceData.length === 0) {
         setError("No attendance records found.");
         return;
       }
-
       let currentRecordUserName = attendanceData[0][0].userName;
       // console.info("currentRecordUserName:", currentRecordUserName)
       setAttUserName(currentRecordUserName);
