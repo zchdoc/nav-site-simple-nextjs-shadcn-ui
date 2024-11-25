@@ -9,7 +9,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
   console.log("Query Params:", { sn, table, Stamp });
   console.log("Request Body:", { data });
 
-  const serverUrl = "http://a2.4000063966.com:81";
+  const serverUrl = "http://127.0.0.1:8081";
   const url = `${serverUrl}/iclock/attDataCustom?sn=${sn}&table=${table}&Stamp=${Stamp}`;
 
   try {
